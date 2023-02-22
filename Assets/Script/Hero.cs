@@ -6,7 +6,7 @@ public class Hero : MonoBehaviour
 {
     // Start is called before the first frame update
     public SpriteRenderer ren;
-    public GameObject still, fight, move,roll;
+    public GameObject still, fight, move,roll,jump;
     bool leftStarted = false;
     bool rightStarted = false;
     bool inAir = false;
@@ -29,6 +29,7 @@ public class Hero : MonoBehaviour
             
             inAir = true;
             spaceClicked = true;
+            jumpStarted();
             GetComponent<Rigidbody2D>().AddForce(Vector2.up, ForceMode2D.Impulse);
         }
         if (Input.GetKeyDown(KeyCode.D))
@@ -87,6 +88,11 @@ public class Hero : MonoBehaviour
     {
         if (collision.gameObject.tag == "Brick")
         {
+            if (spaceClicked == false)
+            {
+                still.SetActive(true);
+                move.SetActive(false);
+            }
             inAir = true;
             
         }
@@ -97,12 +103,10 @@ public class Hero : MonoBehaviour
     {
         if (collision.gameObject.tag == "Brick" )
         {
-            if (spaceClicked == false)
-            {
-                startRolling();
-            }
+            
             inAir = false;
             spaceClicked = false;
+          
         }
 
     }
@@ -145,8 +149,10 @@ public class Hero : MonoBehaviour
 
     private void fightStopped()
     {
+
         move.SetActive(false);
         still.SetActive(true);
+        
         fight.SetActive(false);
     }
 
@@ -155,7 +161,7 @@ public class Hero : MonoBehaviour
         roll.SetActive(true);
         move.SetActive(false);
         still.SetActive(false);
-        Invoke("stopRoll", 0.5f);
+        Invoke("stopRoll", 1f);
     }
     private void stopRoll ()
     {
@@ -164,12 +170,33 @@ public class Hero : MonoBehaviour
         still.SetActive(true);
         
     }
+
+    private void jumpStarted()
+    {
+        jump.SetActive(true);
+        still.SetActive(false);
+        move.SetActive(false);
+        fight.SetActive(false);
+        Invoke("jumpStopped", 1f);
+    }
+
+    private void jumpStopped()
+    {
+        jump.SetActive(false);
+       
+            still.SetActive(false);
+            move.SetActive(true);
+    
+        
+        
+    }
     private void flipRight()
     {
         move.GetComponent<SpriteRenderer>().flipX = false;
         still.GetComponent<SpriteRenderer>().flipX = false;
         fight.GetComponent<SpriteRenderer>().flipX = false;
         roll.GetComponent<SpriteRenderer>().flipX = false;
+        jump.GetComponent<SpriteRenderer>().flipX = false;
     }
 
     private void flipLeft()
@@ -178,6 +205,8 @@ public class Hero : MonoBehaviour
         still.GetComponent<SpriteRenderer>().flipX = true;
         fight.GetComponent<SpriteRenderer>().flipX = true;
         roll.GetComponent<SpriteRenderer>().flipX = true;
+        jump.GetComponent<SpriteRenderer>().flipX = true;
+
     }
 
     
